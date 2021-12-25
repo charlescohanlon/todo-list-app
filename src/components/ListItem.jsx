@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import "./ListItem.css";
 
 class ListItem extends Component {
   editingFields(props) {
@@ -50,12 +51,19 @@ class ListItem extends Component {
   }
 
   render() {
+    const { item, onComplete } = this.props;
+    let inputGroupClasses = "input-group input-group-lg p-1";
+    inputGroupClasses += item.isComplete ? " fade-out-transition" : "";
     return (
-      <div className="input-group input-group-lg p-1">
+      <div className={inputGroupClasses}>
         <div className="input-group-text">
-          <input className="form-check-input mt-0" type="checkbox" />
+          <input
+            className="form-check-input mt-0"
+            type="checkbox"
+            onChange={(change) => onComplete(item, change.target.checked)}
+          />
         </div>
-        {this.props.item.isEditing
+        {item.isEditing
           ? this.editingFields(this.props)
           : this.viewingFields(this.props)}
       </div>
