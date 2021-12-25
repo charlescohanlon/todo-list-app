@@ -15,11 +15,45 @@ class App extends Component {
     }
   };
 
+  setIsEditing(item, isEditing) {
+    const tmp_items = [...this.state.List.ListItems];
+    const index = tmp_items.indexOf(item);
+    tmp_items[index].isEditing = isEditing;
+    this.setState({ List: { ListItems: tmp_items } });
+  }
+
+  handleTextInputChange = (item, newTextInput) => {
+    const tmp_items = [...this.state.List.ListItems];
+    const index = tmp_items.indexOf(item);
+    tmp_items[index].value = newTextInput;
+    this.setState({ List: { ListItems: tmp_items } });
+  }
+
+  handleDone = (item) => {
+    this.setIsEditing(item, false);
+  }
+
+  handleDelete = (id) => {
+    const tmp_items = this.state.List.ListItems.filter(
+      (item) => item.id !== id
+    );
+    this.setState({ List: { ListItems: tmp_items } })
+  }
+
+  handleEditing = (item) => {
+    this.setIsEditing(item, true);
+  }
 
 
   render() {
     return (
-      <List items={this.state.List.ListItems} />
+      <List
+        items={this.state.List.ListItems}
+        onChange={this.handleTextInputChange}
+        onDone={this.handleDone}
+        onDelete={this.handleDelete}
+        onEditing={this.handleEditing}
+      />
     );
   }
 }

@@ -1,29 +1,63 @@
 import React, { Component } from "react";
 
 class ListItem extends Component {
-  render() {
-    const { isEditing } = this.props;
-    let buttons = isEditing ? (
+  editingFields(props) {
+    return (
       <>
-        <button className="btn btn-primary" onClick={() => this.handleDone}>
+        <input
+          type="text"
+          className="form-control"
+          value={props.value}
+          onChange={(newText) =>
+            props.onChange(props.item, newText.target.value)
+          }
+        />
+        <button
+          className="btn btn-primary"
+          onClick={() => props.onDone(props.item)}
+        >
           Done
         </button>
-        <button className="btn btn-danger" onClick={() => this.handleDelete}>
+        <button
+          className="btn btn-danger"
+          onClick={() => props.onDelete(props.item.id)}
+        >
           Delete
         </button>
       </>
-    ) : (
-      <button className="btn btn-warning" onClick={() => this.handleEditing}>
-        Edit
-      </button>
     );
+  }
+
+  viewingFields(props) {
     return (
-      <div className="input-group p-1">
+      <>
+        <input
+          type="text"
+          className="form-control"
+          readOnly={true}
+          value={props.value}
+        />
+        <button
+          className="btn btn-warning"
+          onClick={() => {
+            this.props.onEditing(props.item);
+          }}
+        >
+          Edit
+        </button>
+      </>
+    );
+  }
+
+  render() {
+    return (
+      <div className="input-group input-group-lg p-1">
         <div className="input-group-text">
           <input className="form-check-input mt-0" type="checkbox" />
         </div>
-        <input type="text" className="form-control" readOnly={!isEditing} />
-        {buttons}
+        {this.props.item.isEditing
+          ? this.editingFields(this.props)
+          : this.viewingFields(this.props)}
       </div>
     );
   }
