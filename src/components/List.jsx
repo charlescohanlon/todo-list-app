@@ -3,8 +3,15 @@ import ListItem from "./ListItem";
 
 class List extends Component {
   render() {
-    const { items, onChange, onDone, onDelete, onEditing, onComplete } =
-      this.props;
+    const {
+      items,
+      onChange,
+      onDone,
+      onDelete,
+      onEditing,
+      onComplete,
+      onAddItem,
+    } = this.props;
     return (
       <div>
         {items.map((item) => (
@@ -18,6 +25,12 @@ class List extends Component {
             onComplete={onComplete}
           />
         ))}
+        <button
+          className="btn btn-outline-primary btn-lg container"
+          onClick={onAddItem}
+        >
+          <b>+</b>
+        </button>
       </div>
     );
   }
