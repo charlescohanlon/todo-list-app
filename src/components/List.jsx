@@ -6,7 +6,7 @@ class List extends Component {
   render() {
     const {
       items,
-      listIndex,
+      listId,
       onChange,
       onDone,
       onDelete,
@@ -14,14 +14,15 @@ class List extends Component {
       onComplete,
       onAddItem,
     } = this.props;
+    // console.log("canAddNewItem: ", canAddNewItem);
     return (
       <div>
         {items.map((item) => (
           <ListItem
-            key={items.indexOf(item)}
+            key={item.itemId}
+            itemId={item.itemId}
+            listId={listId}
             item={item}
-            itemIndex={items.indexOf(item)}
-            listIndex={listIndex}
             onChange={onChange}
             onDone={onDone}
             onDelete={onDelete}
@@ -31,9 +32,9 @@ class List extends Component {
         ))}
         <button
           className="btn btn-outline-primary btn-lg full-width"
-          onClick={() => onAddItem(listIndex)}
+          onClick={() => onAddItem(listId)}
         >
-          <b>+</b>
+          <b>New Todo Item</b>
         </button>
       </div>
     );

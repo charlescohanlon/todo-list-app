@@ -4,56 +4,62 @@ import List from "./components/List.jsx";
 
 class App extends Component {
   state = {
-    lists: [{
-      listItems: [{ value: "", isEditing: true, isComplete: false }]
-    }]
+    lists: [
+      { listId: 0, listItems: [{ itemId: 0, value: "", isEditing: true, isComplete: false }] }
+    ]
   };
 
-  getMatchingItemForList(listIndex, itemIndex) {
+  // could make this more efficient by checking at the index equivalent to the id before searching
+  getMatchingItemForList(listPos) {
+    const { itemId, listId } = listPos;
     const lists = [...this.state.lists];
-    const item = this.state.lists[listIndex].listItems[itemIndex];
-    return { lists, item };
+    const listIndex = lists.findIndex(list => list.listId === listId);
+    const itemIndex = (itemId !== null) ? lists[listIndex].listItems.findIndex(item => item.itemId === itemId) : null;
+    return { lists, listIndex, itemIndex };
   }
 
-  setIsEditing(listIndex, itemIndex, isEditing) {
-    const { lists, item } = this.getMatchingItemForList(listIndex, itemIndex);
-    item.isEditing = isEditing;
-    lists[listIndex].listItems[itemIndex] = item;
+  setIsEditing(listPos, isEditing) {
+    const { lists, listIndex, itemIndex } = this.getMatchingItemForList(listPos);
+    lists[listIndex].listItems[itemIndex].isEditing = isEditing;
     this.setState({ lists });
   }
 
-  // TODO: fix something wrong with the listItem indices
-  removeItem(listIndex, itemIndex) {
-    const lists = [...this.state.lists];
-    lists[listIndex].listItems.splice(0, 1);
+  removeItem(listPos) {
+    const { lists, listIndex, itemIndex } = this.getMatchingItemForList(listPos);
+    let list = lists[listIndex].listItems;
+    console.log("deleting: ", itemIndex);
+    list.splice(itemIndex, 1);
+    for (let i = 0; i < list.length; i++) {
+      list[i].itemId = i;
+    }
     console.log(lists);
     this.setState({ lists });
   }
 
-  handleTextInputChange = (listIndex, itemIndex, newTextInput) => {
-    const { lists, item } = this.getMatchingItemForList(listIndex, itemIndex);
-    item.value = newTextInput;
-    lists[listIndex].listItems[itemIndex] = item;
+  handleTextInputChange = (listPos, newTextInput) => {
+    const { lists, listIndex, itemIndex } = this.getMatchingItemForList(listPos);
+    lists[listIndex].listItems[itemIndex].value = newTextInput;
     this.setState({ lists });
   };
 
-  handleDone = (listIndex, itemIndex) => {
-    this.setIsEditing(listIndex, itemIndex, false);
+  handleDone = (listPos) => {
+    this.setIsEditing(listPos, false);
   };
 
-  handleDelete = (listIndex, itemIndex) => {
-    this.removeItem(listIndex, itemIndex);
+  handleDelete = (listPos) => {
+    this.removeItem(listPos);
   };
 
-  handleEdit = (listIndex, itemIndex) => {
-    this.setIsEditing(listIndex, itemIndex, true);
+  handleEdit = (listPos) => {
+    this.setIsEditing(listPos, true);
   };
 
-  handleAddItem = (listIndex) => {
-    const lists = [...this.state.lists];
+  handleAddItem = (listId) => {
+    const listPos = { listId, itemId: null };
+    const { lists, listIndex } = this.getMatchingItemForList(listPos);
     const nextIndex = lists[listIndex].listItems.length;
     lists[listIndex].listItems.push({
-      id: nextIndex,
+      itemId: nextIndex,
       value: "",
       isEditing: true,
       isComplete: false,
@@ -61,30 +67,31 @@ class App extends Component {
     this.setState({ lists });
   };
 
-  handleComplete = (listIndex, itemIndex, isChecked) => {
+  handleComplete = (listPos, isChecked) => {
     if (isChecked) {
-      const { lists, item } = this.getMatchingItemForList(listIndex, itemIndex);
-      item.isChecked = isChecked;
-      lists[listIndex].listItems[itemIndex] = item;
+      const { lists, listIndex, itemIndex } = this.getMatchingItemForList(listPos);
+      lists[listIndex].listItems[itemIndex].isComplete = isChecked;
       this.setState({ lists });
-      setTimeout(() => this.removeItem(listIndex, itemIndex), 2000);
+      this.removeItem(listPos)
+      // setTimeout(() => this.removeItem(listPos), 2000);
     }
   };
 
   render() {
-    const { lists } = this.state;
     return (
-      <div>
+      <div className="row">
         {this.state.lists.map((list) => (
-          <List key={lists.indexOf(list)}
-            listIndex={lists.indexOf(list)}
-            items={list.listItems}
-            onChange={this.handleTextInputChange}
-            onDone={this.handleDone}
-            onDelete={this.handleDelete}
-            onEdit={this.handleEdit}
-            onComplete={this.handleComplete}
-            onAddItem={this.handleAddItem} />
+          <div className="container col-3 gx-0" key={list.listId}>
+            <List
+              listId={list.listId}
+              items={list.listItems}
+              onChange={this.handleTextInputChange}
+              onDone={this.handleDone}
+              onDelete={this.handleDelete}
+              onEdit={this.handleEdit}
+              onComplete={this.handleComplete}
+              onAddItem={this.handleAddItem} />
+          </div>
         ))}
       </div>
     );

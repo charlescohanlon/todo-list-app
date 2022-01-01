@@ -4,29 +4,28 @@ import "./ListItem.css";
 class ListItem extends Component {
   getTextFieldClasses() {
     let inputClasses = "form-control";
+    // inputClasses += this.props.item.isComplete ? " show-complete" : "";
     return inputClasses;
   }
 
-  editingFields(itemIndex, listIndex) {
+  editingFields(item, pos) {
     return (
       <>
         <input
           type="text"
           className={this.getTextFieldClasses()}
-          value={this.props.value}
-          onChange={(newText) =>
-            this.props.onChange(listIndex, itemIndex, newText.target.value)
-          }
+          value={item.value}
+          onChange={(newText) => this.props.onChange(pos, newText.target.value)}
         />
         <button
           className="btn btn-primary"
-          onClick={() => this.props.onDone(listIndex, itemIndex)}
+          onClick={() => this.props.onDone(pos)}
         >
           Done
         </button>
         <button
           className="btn btn-danger"
-          onClick={() => this.props.onDelete(listIndex, itemIndex)}
+          onClick={() => this.props.onDelete(pos)}
         >
           Delete
         </button>
@@ -34,19 +33,29 @@ class ListItem extends Component {
     );
   }
 
-  viewingFields(itemIndex, listIndex) {
+  viewingFields(item, pos) {
     return (
       <>
+        <div className="input-group-text">
+          <input
+            className="form-check-input mt-0"
+            type="checkbox"
+            value={true}
+            onChange={(change) =>
+              this.props.onComplete(pos, change.target.checked)
+            }
+          />
+        </div>
         <input
           type="text"
           className={this.getTextFieldClasses()}
           readOnly={true}
-          value={this.props.value}
+          value={item.value}
         />
         <button
           className="btn btn-warning"
           onClick={() => {
-            this.props.onEdit(listIndex, itemIndex);
+            this.props.onEdit(pos);
           }}
         >
           Edit
@@ -56,23 +65,14 @@ class ListItem extends Component {
   }
 
   render() {
-    const { item, itemIndex, listIndex } = this.props;
+    const { item, itemId, listId } = this.props;
     let inputGroupClasses = "input-group input-group-lg";
-    inputGroupClasses += item.isComplete ? " fade-out-transition" : "";
+    // inputGroupClasses += item.isComplete ? " fade-out-transition" : "";
     return (
       <div className={inputGroupClasses}>
-        <div className="input-group-text">
-          <input
-            className="form-check-input mt-0"
-            type="checkbox"
-            onChange={(change) =>
-              this.props.onComplete(listIndex, itemIndex, change.target.checked)
-            }
-          />
-        </div>
         {item.isEditing
-          ? this.editingFields(itemIndex, listIndex)
-          : this.viewingFields(itemIndex, listIndex)}
+          ? this.editingFields(item, { itemId, listId })
+          : this.viewingFields(item, { itemId, listId })}
       </div>
     );
   }
