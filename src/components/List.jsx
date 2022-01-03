@@ -1,42 +1,39 @@
 import React, { Component } from "react";
 import ListItem from "./ListItem";
-import "./List.css";
+import "./custom_css/List.css";
 
 class List extends Component {
-  render() {
-    const {
-      items,
-      listId,
-      onChange,
-      onDone,
-      onDelete,
-      onEdit,
-      onComplete,
-      onAddItem,
-    } = this.props;
-    // console.log("canAddNewItem: ", canAddNewItem);
+  getAddBtnFor(listId) {
     return (
-      <div>
-        {items.map((item) => (
-          <ListItem
-            key={item.itemId}
-            itemId={item.itemId}
-            listId={listId}
-            item={item}
-            onChange={onChange}
-            onDone={onDone}
-            onDelete={onDelete}
-            onEdit={onEdit}
-            onComplete={onComplete}
-          />
-        ))}
-        <button
-          className="btn btn-outline-primary btn-lg full-width"
-          onClick={() => onAddItem(listId)}
-        >
-          <b>New Todo Item</b>
-        </button>
-      </div>
+      <button
+        className="btn btn-outline-primary btn-lg full-width"
+        onClick={() => this.props.onAddItem(listId)}
+      >
+        <b>New Todo Item</b>
+      </button>
+    );
+  }
+
+  render() {
+    const { items, listId, onChange, onDone, onDelete, onEdit, onComplete } =
+      this.props;
+    const listItems = items.map((item) => (
+      <ListItem
+        key={item.itemId}
+        listId={listId}
+        item={item}
+        onChange={onChange}
+        onDone={onDone}
+        onDelete={onDelete}
+        onEdit={onEdit}
+        onComplete={onComplete}
+      />
+    ));
+    return (
+      <>
+        {listItems}
+        {this.getAddBtnFor(listId)}
+      </>
     );
   }
 }

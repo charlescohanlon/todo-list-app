@@ -1,8 +1,12 @@
 .fade-out-transition {
   opacity: 0;
-  transition: opacity 1.5s;
+  transition: opacity 0.5s;
 }
 
 .show-complete {
   background: rgb(18, 194, 18) !important;
+}
+
+.non-resizable {
+  resize: none;
 }
