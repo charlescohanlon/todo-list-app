@@ -12,6 +12,7 @@ function NavBar(props) {
     </nav>
   );
 }
+
 NavBar.propTypes = {
   onAddList: PropTypes.func.isRequired,
 };

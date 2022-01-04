@@ -25,6 +25,7 @@ function Lists(props) {
     </div>
   );
 }
+
 Lists.propTypes = {
   lists: PropTypes.arrayOf(PropTypes.shape({
     title: PropTypes.string.isRequired,

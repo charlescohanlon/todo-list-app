@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import ListItem from './ListItem';
+// import ListTitle from './ListTitle';
 import './custom_css/List.css';
 
 class List extends Component {
@@ -43,12 +44,14 @@ class List extends Component {
     ));
     return (
       <>
+        {/* <ListTitle /> */}
         {listItems}
         {this.getAddBtnFor(listId, onAddItem)}
       </>
     );
   }
 }
+
 List.propTypes = {
   items: PropTypes.arrayOf(PropTypes.shape({
     itemId: PropTypes.number.isRequired,

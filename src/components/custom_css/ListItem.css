@@ -1,12 +1,18 @@
-.fade-out-transition {
+.fade-out {
   opacity: 0;
   transition: opacity 0.5s;
 }
 
 .show-complete {
   background: rgb(18, 194, 18) !important;
+  color: rgb(18, 194, 18) !important;
 }
 
 .non-resizable {
   resize: none;
+}
+
+.large-checkbox {
+  width: 1.75rem;
+  height: 1.75rem;
 }

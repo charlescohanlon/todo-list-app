@@ -12,9 +12,9 @@ class ListItem extends Component {
 
   getCheckBoxFor(pos, onComplete) {
     const viewingCheckBox = (
-      <div className="input-group-text">
+      <div className="input-group-text btn-group-lg">
         <input
-          className="form-check-input mt-0"
+          className="form-check-input mt-0 large-checkbox"
           type="checkbox"
           onChange={(change) => onComplete(pos, change.target.checked)}
         />
@@ -24,12 +24,14 @@ class ListItem extends Component {
   }
 
   getTextAreaFor(pos, onChange, onDone, onEdit) {
+    const { text, isEditing, isComplete } = this.item;
     let textAreaClasses = 'form-control non-resizable';
-    if (this.item.isComplete) textAreaClasses += ' show-complete';
+    if (isComplete) textAreaClasses += ' show-complete';
+
     const editingTextArea = (
       <TextareaAutosize
         className={textAreaClasses}
-        value={this.item.text}
+        value={text}
         onChange={(evt) => onChange(pos, evt.target.value)}
         onKeyDown={(evt) => {
           if (evt.key === 'Enter') onDone(pos);
@@ -37,18 +39,22 @@ class ListItem extends Component {
         autoFocus
       />
     );
+    if (isEditing) return editingTextArea;
+
     const viewingTextArea = (
       <TextareaAutosize
         className={textAreaClasses}
-        value={this.item.text}
+        value={text}
         readOnly
         onDoubleClick={() => onEdit(pos)}
+        ref={(input) => { this.textInputArea = input; }}
       />
     );
-    return this.item.isEditing ? editingTextArea : viewingTextArea;
+    return viewingTextArea;
   }
 
   getBtnsFor(pos, onDone, onDelete, onEdit) {
+    const { isEditing, isComplete } = this.item;
     const editingButtons = (
       <>
         <button
@@ -67,16 +73,21 @@ class ListItem extends Component {
         </button>
       </>
     );
+    if (isEditing) return editingButtons;
+
     const viewingButtons = (
       <button
         type="button"
-        className="btn btn-warning"
-        onClick={() => onEdit(pos)}
+        className={`btn ${isComplete ? 'show-complete' : 'btn-warning'}`}
+        onClick={() => {
+          onEdit(pos);
+          this.textInputArea.focus();
+        }}
       >
         Edit
       </button>
     );
-    return this.item.isEditing ? editingButtons : viewingButtons;
+    return viewingButtons;
   }
 
   render() {
@@ -84,10 +95,9 @@ class ListItem extends Component {
       listId, onComplete, onChange, onDone, onEdit, onDelete,
     } = this.props;
     const pos = { itemId: this.item.itemId, listId };
-    let inputGroupClasses = 'input-group input-group-lg pt-1';
-    if (this.item.isComplete) inputGroupClasses += ' fade-out-transition';
+    const { isComplete } = this.item;
     return (
-      <div className={inputGroupClasses}>
+      <div className={`input-group input-group-lg mt-1 ${isComplete ? 'fade-out' : ''}`}>
         {this.getCheckBoxFor(pos, onComplete)}
         {this.getTextAreaFor(pos, onChange, onDone, onEdit)}
         {this.getBtnsFor(pos, onDone, onDelete, onEdit)}
@@ -95,6 +105,7 @@ class ListItem extends Component {
     );
   }
 }
+
 ListItem.propTypes = {
   item: PropTypes.shape({
     itemId: PropTypes.number.isRequired,
