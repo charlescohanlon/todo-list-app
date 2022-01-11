@@ -1,3 +1,9 @@
+
+input:focus, textarea:focus {
+  outline: none !important;
+  box-shadow: none !important;
+}
+
 .fade-out {
   opacity: 0;
   transition: opacity 0.5s;
@@ -15,4 +21,13 @@
 .large-checkbox {
   width: 1.75rem;
   height: 1.75rem;
+}
+
+.title-text {
+  text-align: center;
+  border: none;
+}
+
+.btn-warning:hover {
+  background-color: #e9ecef !important;
 }

@@ -4,16 +4,25 @@ import List from './List';
 
 function Lists(props) {
   const {
-    lists, onChange, onDone, onDelete, onEdit, onComplete, onAddItem,
+    lists,
+    onTitleTextChange,
+    onDeleteList,
+    onItemTextChange,
+    onDone, onDelete,
+    onEdit, onComplete,
+    onAddItem,
   } = props;
   return (
     <div className="row px-4">
       {lists.map((list) => (
-        <div className="container col gx-4" key={list.listId}>
+        <div className="container col-6 gx-4" key={list.listId}>
           <List
+            titleVal={list.title}
             listId={list.listId}
             items={list.listItems}
-            onChange={onChange}
+            onTitleTextChange={onTitleTextChange}
+            onDeleteList={onDeleteList}
+            onItemTextChange={onItemTextChange}
             onDone={onDone}
             onDelete={onDelete}
             onEdit={onEdit}
@@ -38,7 +47,9 @@ Lists.propTypes = {
     })),
     lastItemId: PropTypes.number.isRequired,
   })).isRequired,
-  onChange: PropTypes.func.isRequired,
+  onTitleTextChange: PropTypes.func.isRequired,
+  onDeleteList: PropTypes.func.isRequired,
+  onItemTextChange: PropTypes.func.isRequired,
   onDone: PropTypes.func.isRequired,
   onDelete: PropTypes.func.isRequired,
   onEdit: PropTypes.func.isRequired,

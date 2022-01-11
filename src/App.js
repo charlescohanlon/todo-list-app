@@ -1,5 +1,5 @@
 /*
- * TODO: add list titles, add list delete, look into JSON.stringify to "save" todos
+ * TODO:
  * add comment documentation, make responsive
 */
 import React, { Component } from 'react';
@@ -42,6 +42,12 @@ class TodoApp extends Component {
     newLists[listIndex].listItems[itemIndex].isEditing = isEditing;
     this.setState({ lists: newLists });
   }
+
+  handleTitleTextChange = (listPos, newVal) => {
+    const { newLists, listIndex } = this.getMatchingItemForList(listPos);
+    newLists[listIndex].title = newVal;
+    this.setState({ lists: newLists });
+  };
 
   handleTextInputChange = (listPos, value) => {
     const { newLists, listIndex, itemIndex } = this.getMatchingItemForList(listPos);
@@ -95,6 +101,14 @@ class TodoApp extends Component {
     this.setState(newState);
   };
 
+  handleDeleteList = (listId) => {
+    const newState = { ...this.state };
+    const { newLists, listIndex } = this.getMatchingItemForList({ listId, itemId: null });
+    newLists.splice(listIndex, 1);
+    newState.lists = newLists;
+    this.setState(newState);
+  };
+
   removeItem(listPos) {
     const { newLists, listIndex, itemIndex } = this.getMatchingItemForList(listPos);
     const list = newLists[listIndex].listItems;
@@ -106,10 +120,12 @@ class TodoApp extends Component {
     const { lists } = this.state;
     return (
       <div>
-        <NavBar onAddList={this.handleAddList} />
+        <NavBar onAddList={this.handleAddList} listLength={lists.length} />
         <Lists
           lists={lists}
-          onChange={this.handleTextInputChange}
+          onTitleTextChange={this.handleTitleTextChange}
+          onDeleteList={this.handleDeleteList}
+          onItemTextChange={this.handleTextInputChange}
           onDone={this.handleDone}
           onDelete={this.handleDelete}
           onEdit={this.handleEdit}
