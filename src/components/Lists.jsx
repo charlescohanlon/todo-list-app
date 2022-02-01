@@ -1,6 +1,5 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import List from './List';
+import React from "react";
+import List from "./List";
 
 function Lists(props) {
   const {
@@ -8,18 +7,21 @@ function Lists(props) {
     onTitleTextChange,
     onDeleteList,
     onItemTextChange,
-    onDone, onDelete,
-    onEdit, onComplete,
+    onDone,
+    onDelete,
+    onEdit,
+    onComplete,
     onAddItem,
   } = props;
   return (
     <div className="row px-4">
       {lists.map((list) => (
-        <div className="container col-6 gx-4" key={list.listId}>
+        <div
+          className={`col-lg-6 gx-4 ${lists.length === 1 ? "container" : ""}`}
+          key={list.listId}
+        >
           <List
-            titleVal={list.title}
-            listId={list.listId}
-            items={list.listItems}
+            listObject={list}
             onTitleTextChange={onTitleTextChange}
             onDeleteList={onDeleteList}
             onItemTextChange={onItemTextChange}
@@ -34,27 +36,5 @@ function Lists(props) {
     </div>
   );
 }
-
-Lists.propTypes = {
-  lists: PropTypes.arrayOf(PropTypes.shape({
-    title: PropTypes.string.isRequired,
-    listId: PropTypes.number.isRequired,
-    listItems: PropTypes.arrayOf(PropTypes.shape({
-      itemId: PropTypes.number.isRequired,
-      text: PropTypes.string.isRequired,
-      isEditing: PropTypes.bool.isRequired,
-      isComplete: PropTypes.bool.isRequired,
-    })),
-    lastItemId: PropTypes.number.isRequired,
-  })).isRequired,
-  onTitleTextChange: PropTypes.func.isRequired,
-  onDeleteList: PropTypes.func.isRequired,
-  onItemTextChange: PropTypes.func.isRequired,
-  onDone: PropTypes.func.isRequired,
-  onDelete: PropTypes.func.isRequired,
-  onEdit: PropTypes.func.isRequired,
-  onComplete: PropTypes.func.isRequired,
-  onAddItem: PropTypes.func.isRequired,
-};
 
 export default Lists;

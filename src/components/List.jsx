@@ -1,19 +1,22 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import ListItem from './ListItem';
-import './custom_css/List.css';
+import React, { Component } from "react";
+import ListItem from "./ListItem";
+import "./custom_css/ListComponents.css";
 
 class List extends Component {
   getListTitle(listId, titleVal, onTitleTextChange) {
     return (
       <input
         type="text"
-        className="form-control non-resizable title-text p-0 mt-2 fs-2"
+        className="form-control non-resizable title-text p-0 mt-3 fs-2"
         placeholder="List Title"
-        ref={(input) => { this.titleInputArea = input; }}
-        onChange={(evt) => onTitleTextChange({ itemId: null, listId }, evt.target.value)}
+        ref={(input) => {
+          this.titleInputArea = input;
+        }}
+        onChange={(evt) =>
+          onTitleTextChange({ itemId: null, listId }, evt.target.value)
+        }
         onKeyDown={(evt) => {
-          if (evt.key === 'Enter') {
+          if (evt.key === "Enter") {
             this.titleInputArea.blur();
           }
         }}
@@ -22,42 +25,32 @@ class List extends Component {
     );
   }
 
-  getAddAndDeleteBtnFor(listId, onAddItem, onDeleteList) {
-    const btnClasses = 'btn btn-lg full-width btn-';
+  getAddAndDeleteBtnsFor(listId, canAddNewItem, onAddItem, onDeleteList) {
+    const btnClasses = "btn btn-lg full-width btn-";
     return (
       <>
         <button
           type="button"
           className={`${btnClasses}primary mb-1`}
           onClick={() => onAddItem(listId)}
-          disabled={!this.canAddNewItem()}
+          disabled={canAddNewItem}
         >
-          <b>New Todo Item</b>
+          Add New Item
         </button>
         <button
           type="button"
           className={`${btnClasses}danger`}
           onClick={() => onDeleteList(listId)}
         >
-          <b>Delete List</b>
+          Delete List
         </button>
       </>
     );
   }
 
-  canAddNewItem() {
-    const { items } = this.props;
-    for (let i = 0; i < items.length; i += 1) {
-      if (items[i].isEditing) return false;
-    }
-    return true;
-  }
-
   render() {
     const {
-      titleVal,
-      items,
-      listId,
+      listObject,
       onTitleTextChange,
       onItemTextChange,
       onDone,
@@ -68,11 +61,11 @@ class List extends Component {
       onDeleteList,
     } = this.props;
 
-    const listItems = items.map((item) => (
+    const listItems = listObject.listItems.map((item) => (
       <ListItem
         key={item.itemId}
-        listId={listId}
-        item={item}
+        itemObject={item}
+        listId={listObject.listId}
         onItemTextChange={onItemTextChange}
         onDone={onDone}
         onDelete={onDelete}
@@ -80,33 +73,22 @@ class List extends Component {
         onComplete={onComplete}
       />
     ));
+
+    const { listId, titleVal } = this.props.listObject;
+    const canAddNewItem = listObject.listItems.some((item) => item.isEditing);
     return (
       <>
         {this.getListTitle(listId, titleVal, onTitleTextChange)}
         {listItems}
-        {this.getAddAndDeleteBtnFor(listId, onAddItem, onDeleteList)}
+        {this.getAddAndDeleteBtnsFor(
+          listId,
+          canAddNewItem,
+          onAddItem,
+          onDeleteList
+        )}
       </>
     );
   }
 }
-
-List.propTypes = {
-  titleVal: PropTypes.string.isRequired,
-  items: PropTypes.arrayOf(PropTypes.shape({
-    itemId: PropTypes.number.isRequired,
-    text: PropTypes.string.isRequired,
-    isEditing: PropTypes.bool.isRequired,
-    isComplete: PropTypes.bool.isRequired,
-  })).isRequired,
-  listId: PropTypes.number.isRequired,
-  onTitleTextChange: PropTypes.func.isRequired,
-  onItemTextChange: PropTypes.func.isRequired,
-  onDone: PropTypes.func.isRequired,
-  onDelete: PropTypes.func.isRequired,
-  onEdit: PropTypes.func.isRequired,
-  onComplete: PropTypes.func.isRequired,
-  onAddItem: PropTypes.func.isRequired,
-  onDeleteList: PropTypes.func.isRequired,
-};
 
 export default List;

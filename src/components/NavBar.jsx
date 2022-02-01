@@ -1,33 +1,29 @@
-import React from 'react';
-import PropTypes from 'prop-types';
+import React from "react";
 
 function NavBar(props) {
-  const { onAddList, listLength } = props;
+  const { onAddList } = props;
 
   const addListButton = (
     <button
       type="button"
       className="btn btn-lg btn-outline-primary d-flex"
       onClick={onAddList}
-      disabled={!(listLength < 4)}
     >
-      <b>New List</b>
+      New List
     </button>
   );
 
   return (
     <nav className="navbar navbar-light bg-dark">
       <div className="container-fluid px-4">
-        <h1 className="text-white">Todo List App</h1>
+        <div className="text-white">
+          <h1>Todo List App</h1>
+          <h6 className="text-white">by Charles O'Hanlon</h6>
+        </div>
         {addListButton}
       </div>
     </nav>
   );
 }
-
-NavBar.propTypes = {
-  onAddList: PropTypes.func.isRequired,
-  listLength: PropTypes.number.isRequired,
-};
 
 export default NavBar;

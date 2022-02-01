@@ -1,5 +1,12 @@
+.full-width {
+  width: 100%;
+}
 
-input:focus, textarea:focus {
+.editing-textfield:focus {
+  border-color: #ced4da;
+}
+
+.form-control:focus {
   outline: none !important;
   box-shadow: none !important;
 }
@@ -10,8 +17,9 @@ input:focus, textarea:focus {
 }
 
 .show-complete {
-  background: rgb(18, 194, 18) !important;
-  color: rgb(18, 194, 18) !important;
+  background: limegreen !important;
+  color: limegreen !important;
+  border-color: limegreen !important;
 }
 
 .non-resizable {
@@ -26,8 +34,6 @@ input:focus, textarea:focus {
 .title-text {
   text-align: center;
   border: none;
-}
-
-.btn-warning:hover {
-  background-color: #e9ecef !important;
+  font-size: 2.25rem !important;
+  font-weight: bold;
 }

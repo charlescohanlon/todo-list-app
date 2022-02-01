@@ -1,16 +1,14 @@
-import React, { Component } from 'react';
-import './custom_css/ListItem.css';
-import TextareaAutosize from 'react-textarea-autosize';
-import PropTypes from 'prop-types';
+import React, { Component } from "react";
+import "./custom_css/ListComponents.css";
+import TextareaAutosize from "react-textarea-autosize";
 
 class ListItem extends Component {
   constructor(props) {
     super();
     this.props = props;
-    this.item = props.item;
   }
 
-  getCheckBoxFor(pos, onComplete) {
+  getCheckBoxFor(pos, item, onComplete) {
     const viewingCheckBox = (
       <div className="input-group-text btn-group-lg">
         <input
@@ -20,40 +18,44 @@ class ListItem extends Component {
         />
       </div>
     );
-    return this.item.isEditing ? null : viewingCheckBox;
+    return item.isEditing ? null : viewingCheckBox;
   }
 
-  getTextAreaFor(pos, onItemTextChange, onDone, onEdit) {
-    const { text, isEditing, isComplete } = this.item;
-    let textAreaClasses = 'form-control non-resizable';
-    if (isComplete) textAreaClasses += ' show-complete';
-
+  getTextAreaFor(pos, item, onItemTextChange, onDone, onEdit) {
+    const textAreaClasses = "form-control non-resizable";
     const editingTextArea = (
       <TextareaAutosize
         className={textAreaClasses}
-        value={text}
+        autoFocus
+        value={item.text}
+        ref={(input) => {
+          this.textAreaViewing = input;
+        }}
         onChange={(evt) => onItemTextChange(pos, evt.target.value)}
         onKeyDown={(evt) => {
-          if (evt.key === 'Enter') onDone(pos);
+          if (evt.key === "Enter") {
+            onDone(pos);
+            this.textAreaViewing.blur();
+          }
         }}
       />
     );
-    if (isEditing) return editingTextArea;
-
+    if (item.isEditing) return editingTextArea;
     const viewingTextArea = (
       <TextareaAutosize
-        className={textAreaClasses}
-        value={text}
+        className={`${textAreaClasses + " editing-textfield"}`}
+        value={item.text}
         readOnly
         onDoubleClick={() => onEdit(pos)}
-        ref={(input) => { this.textInputArea = input; }}
+        ref={(input) => {
+          this.textAreaInput = input;
+        }}
       />
     );
     return viewingTextArea;
   }
 
-  getBtnsFor(pos, onDone, onDelete, onEdit) {
-    const { isEditing } = this.item;
+  getBtnsFor(pos, item, onDone, onDelete, onEdit) {
     const editingButtons = (
       <>
         <button
@@ -72,7 +74,7 @@ class ListItem extends Component {
         </button>
       </>
     );
-    if (isEditing) return editingButtons;
+    if (item.isEditing) return editingButtons;
 
     const viewingButtons = (
       <button
@@ -80,7 +82,7 @@ class ListItem extends Component {
         className="btn btn-warning px-4"
         onClick={() => {
           onEdit(pos);
-          this.textInputArea.focus();
+          this.textAreaInput.focus();
         }}
       >
         Edit
@@ -91,33 +93,39 @@ class ListItem extends Component {
 
   render() {
     const {
-      listId, onComplete, onItemTextChange, onDone, onEdit, onDelete,
+      listId,
+      itemObject,
+      onComplete,
+      onItemTextChange,
+      onDone,
+      onEdit,
+      onDelete,
     } = this.props;
-    const pos = { itemId: this.item.itemId, listId };
-    const { isComplete } = this.item;
+    const pos = { itemId: itemObject.itemId, listId };
     return (
-      <div className={`input-group input-group-lg mb-1 ${isComplete ? 'fade-out' : ''}`}>
-        {this.getCheckBoxFor(pos, onComplete)}
-        {this.getTextAreaFor(pos, onItemTextChange, onDone, onEdit)}
-        {this.getBtnsFor(pos, onDone, onDelete, onEdit)}
+      <div
+        className={`input-group input-group-lg mb-1 ${
+          itemObject.isComplete ? "fade-out" : ""
+        }`}
+      >
+        {itemObject.isComplete ? (
+          <input className="form-control show-complete"></input>
+        ) : (
+          <>
+            {this.getCheckBoxFor(pos, itemObject, onComplete)}
+            {this.getTextAreaFor(
+              pos,
+              itemObject,
+              onItemTextChange,
+              onDone,
+              onEdit
+            )}
+            {this.getBtnsFor(pos, itemObject, onDone, onDelete, onEdit)}
+          </>
+        )}
       </div>
     );
   }
 }
-
-ListItem.propTypes = {
-  item: PropTypes.shape({
-    itemId: PropTypes.number.isRequired,
-    text: PropTypes.string.isRequired,
-    isEditing: PropTypes.bool.isRequired,
-    isComplete: PropTypes.bool.isRequired,
-  }).isRequired,
-  listId: PropTypes.number.isRequired,
-  onItemTextChange: PropTypes.func.isRequired,
-  onDone: PropTypes.func.isRequired,
-  onDelete: PropTypes.func.isRequired,
-  onEdit: PropTypes.func.isRequired,
-  onComplete: PropTypes.func.isRequired,
-};
 
 export default ListItem;
